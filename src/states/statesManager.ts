@@ -212,6 +212,17 @@ export class StatesManager {
     async saveForDefaultState(view: GraphView | LocalGraphView): Promise<void> {
         const stateData = this.getStateDataById(DEFAULT_STATE_ID);
         if (!stateData) return;
+
+        const instances = ExtendedGraphInstances.graphsManager.allInstances.get(view.leaf.id);
+        if (instances) {
+            const state = new GraphState(stateData.name);
+            state.saveState(stateData);
+            state.setID(DEFAULT_STATE_ID);
+            state.saveGraph(instances);
+            await this.onStateNeedsSaving(state.data, true);
+            return;
+        }
+
         const engine = getEngine(view);
         if (!engine) return;
         stateData.engineOptions = new EngineOptions(engine.getOptions());
