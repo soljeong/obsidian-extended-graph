@@ -1,6 +1,7 @@
 import { Keymap, Menu, TFile, UserEvent } from "obsidian";
 import { FederatedPointerEvent, Graphics } from "pixi.js";
 import { getFileInteractives, OpenExternalLinkModal, Pinner, pixiAddChild, RadialMenuManager, t } from "../internal";
+import { resolveNodeClickIntent, shouldWrapNodeClick } from "./nodeTapAction";
 import { GraphInstances, ExtendedGraphInstances } from "../pluginInstances";
 
 export class InputsManager {
@@ -40,7 +41,7 @@ export class InputsManager {
     }
 
     private changeNodeOnClick(): void {
-        if (this.instances.settings.openInNewTab || this.instances.settings.externalLinks !== "none") {
+        if (shouldWrapNodeClick(this.instances.settings)) {
             this.onNodeClick = this.onNodeClick.bind(this);
             this.coreOnNodeClick = this.instances.renderer.onNodeClick;
             this.instances.renderer.onNodeClick = this.onNodeClick;
@@ -194,12 +195,26 @@ export class InputsManager {
     // ============================== NODE CLICKS ==============================
 
     private onNodeClick(e: UserEvent | null, id: string, type: string): void {
-        // Check if we select the node
-        if (e && ExtendedGraphInstances.settings.useLeftClickToSelect && Keymap.isModifier(e, ExtendedGraphInstances.settings.selectNodeModifier)) {
-            this.instances.nodesSet.selectNodes([this.instances.renderer.nodeLookup[id]]);
-            return;
+        switch (resolveNodeClickIntent({
+            hasSelectionModifier: !!e
+                && ExtendedGraphInstances.settings.useLeftClickToSelect
+                && Keymap.isModifier(e, ExtendedGraphInstances.settings.selectNodeModifier),
+            nodeTapAction: this.instances.settings.nodeTapAction,
+        })) {
+            case "select-node":
+                this.instances.nodesSet.selectNodes([this.instances.renderer.nodeLookup[id]]);
+                return;
+            case "open-radial-menu":
+                new RadialMenuManager(this.instances, id, type).open(null);
+                return;
+            case "open-node":
+            default:
+                this.openNodeFromGraph(e, id, type);
+                return;
         }
+    }
 
+    public openNodeFromGraph(e: UserEvent | null, id: string, type: string): void {
         // Check if we need to open an URL
         if (this.instances.settings.externalLinks !== "none" && "attachment" === type) {
             try {
@@ -220,7 +235,7 @@ export class InputsManager {
                                 ExtendedGraphInstances.app.workspace.openLinkText(paths[0].path, "", "tab");
                             }
                             else {
-                                ExtendedGraphInstances.app.workspace.openLinkText(paths[0].path, "", Keymap.isModEvent(e));
+                                ExtendedGraphInstances.app.workspace.openLinkText(paths[0].path, "", !!e && Keymap.isModEvent(e));
                             }
                             return;
                         }
@@ -231,7 +246,7 @@ export class InputsManager {
                                         ExtendedGraphInstances.app.workspace.openLinkText(file.path, "", "tab");
                                     }
                                     else {
-                                        ExtendedGraphInstances.app.workspace.openLinkText(file.path, "", Keymap.isModEvent(e));
+                                        ExtendedGraphInstances.app.workspace.openLinkText(file.path, "", !!e && Keymap.isModEvent(e));
                                     }
                                 }
                                 else {

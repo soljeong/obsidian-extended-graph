@@ -29,6 +29,7 @@ export type ExternalLinkOpenMode = 'web' | 'note' | 'choice';
 export type NodesSelectionMode = 'replace' | 'add' | 'subtract' | 'intersect';
 export type GraphStatsDirection = 'normal' | 'reversed' | 'undirected';
 export type TagsSource = 'all' | 'frontmatter';
+export type NodeTapAction = 'open-note' | 'open-radial-menu';
 
 type InteractiveSettings = {
     colormap: string;
@@ -218,6 +219,7 @@ export interface ExtendedGraphSettings {
     useRadialMenu: boolean;
     radialMenuModifier: Modifier;
     pinNodeModifier?: Modifier;
+    nodeTapAction: NodeTapAction;
     useLeftClickToSelect: boolean;
     selectNodeModifier: Modifier;
 
@@ -455,6 +457,7 @@ export const DEFAULT_SETTINGS: ExtendedGraphSettings = {
     useRadialMenu: false,
     radialMenuModifier: 'Shift',
     pinNodeModifier: 'Alt',
+    nodeTapAction: 'open-note',
     useLeftClickToSelect: true,
     selectNodeModifier: 'Shift',
 

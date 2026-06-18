@@ -1,5 +1,5 @@
 import { Modifier, Platform, Setting } from "obsidian";
-import { ExtendedGraphSettingTab, ExtendedGraphInstances, SettingsSection, t } from "../internal";
+import { ExtendedGraphSettingTab, ExtendedGraphInstances, NodeTapAction, SettingsSection, t } from "../internal";
 
 export class SettingInput extends SettingsSection {
 
@@ -8,11 +8,31 @@ export class SettingInput extends SettingsSection {
     }
 
     protected override addBody() {
+        this.addNodeTapAction();
         this.addRadialMenu();
         this.addPinHotkey();
         this.addSelectHotkey();
 
         this.checkCompatibility();
+    }
+
+    private addNodeTapAction() {
+        const setting = new Setting(this.settingTab.containerEl)
+            .setName(t("inputs.nodeTapAction"))
+            .setDesc(t("inputs.nodeTapActionDesc"))
+            .addDropdown(cb => {
+                cb.addOptions({
+                    'open-note': t("inputs.nodeTapActionOpenNote"),
+                    'open-radial-menu': t("inputs.nodeTapActionOpenRadialMenu"),
+                });
+                cb.setValue(ExtendedGraphInstances.settings.nodeTapAction);
+                cb.onChange(async (value) => {
+                    ExtendedGraphInstances.settings.nodeTapAction = value as NodeTapAction;
+                    await ExtendedGraphInstances.plugin.saveSettings();
+                });
+            });
+
+        this.elementsBody.push(setting.settingEl);
     }
 
     private addRadialMenu() {

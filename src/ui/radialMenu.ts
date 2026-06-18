@@ -1,5 +1,5 @@
 import { Menu, MenuPositionDef } from "obsidian";
-import { CSSBridge, FOLDER_KEY, FolderBlob, GraphInstances, GraphStateModal, LINK_KEY, TAG_KEY, textColor } from "../internal";
+import { CSSBridge, FOLDER_KEY, FolderBlob, GraphInstances, GraphStateModal, LINK_KEY, TAG_KEY, t, textColor } from "../internal";
 
 interface RadialMenuItem {
     id: string;
@@ -199,6 +199,15 @@ export class RadialMenuManager {
 
     private populateItems() {
         this.allItems = [
+            ...(this.instances.settings.nodeTapAction === "open-radial-menu"
+                ? [{
+                    id: 'open',
+                    title: t("inputs.open"),
+                    icon: 'arrow-up-right',
+                    color: 'green',
+                    onClick: this.onOpen.bind(this)
+                } satisfies RadialMenuItem]
+                : []),
             {
                 id: 'info',
                 title: 'Info',
@@ -306,6 +315,11 @@ export class RadialMenuManager {
         else {
             this.instances.graphEventsDispatcher.inputsManager.pinNodeFromId(this.nodeID);
         }
+        this.menu.close();
+    }
+
+    private onOpen(): void {
+        this.instances.graphEventsDispatcher.inputsManager.openNodeFromGraph(null, this.nodeID, this.nodeType);
         this.menu.close();
     }
 

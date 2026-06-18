@@ -380,6 +380,12 @@
     },
     "inputs": {
         "inputs": "输入",
+        "leftClickIncompatibility": "按键冲突：多个左键输入操作使用了相同的修饰键，无法同时生效。",
+        "nodeTapAction": "节点点按动作",
+        "nodeTapActionDesc": "选择普通节点点按或点击在处理任何右键修饰键之前应执行的动作",
+        "nodeTapActionOpenNote": "打开笔记",
+        "nodeTapActionOpenRadialMenu": "打开轮盘菜单",
+        "open": "打开",
         "pinHotkey": "固定节点 (右键)",
         "pinHotkeyDesc": "按住指定键的同时，鼠标右键点击节点，可以将其固定",
         "radialMenu": "启用节点轮盘菜单",

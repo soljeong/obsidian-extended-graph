@@ -421,6 +421,11 @@
     "inputs": {
         "inputs": "Inputs",
         "leftClickIncompatibility": "Multiple inputs use the same modifier for the left click ; only one of them will work",
+        "nodeTapAction": "Node tap action",
+        "nodeTapActionDesc": "Choose what a normal node tap or click does before any right-click modifiers are considered",
+        "nodeTapActionOpenNote": "Open note",
+        "nodeTapActionOpenRadialMenu": "Open radial menu",
+        "open": "Open",
         "pinHotkey": "Pin node (right click)",
         "pinHotkeyDesc": "When doing a right click on a node while holding the specified key down, it will pin the node",
         "radialMenu": "Radial context menu (right click)",

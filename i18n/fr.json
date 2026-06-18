@@ -421,6 +421,11 @@
     "inputs": {
         "inputs": "Contrôles",
         "leftClickIncompatibility": "Plusieurs entrées utilisent le même modificateur pour le clic gauche ; seule l'une d'entre elles fonctionnera",
+        "nodeTapAction": "Action du toucher de nœud",
+        "nodeTapActionDesc": "Choisit ce qu'un toucher ou clic normal sur un nœud fait avant les modificateurs de clic droit",
+        "nodeTapActionOpenNote": "Ouvrir la note",
+        "nodeTapActionOpenRadialMenu": "Ouvrir le menu radial",
+        "open": "Ouvrir",
         "pinHotkey": "Épingler un nœud (clic droit)",
         "pinHotkeyDesc": "Lorsque vous cliquez avec le bouton droit sur un nœud tout en maintenant la touche spécifiée enfoncée, cela permet d'épingler le nœud",
         "radialMenu": "Activer le menu contextuel radial sur les nœuds",
