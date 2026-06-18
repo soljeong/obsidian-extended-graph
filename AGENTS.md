@@ -49,3 +49,6 @@ copying core graph engine options.
 - Result so far: the plugin loads on Android without code changes. Runtime
   feature compatibility still needs targeted testing.
 - See `doc/local-android-deploy.md` for the current deploy loop and next checks.
+- Approved next UX direction: add a configurable node tap action so short tap
+  can open the radial menu and expose `Open` as a menu item. Design note:
+  `doc/mobile-node-tap-action-design.md`.
