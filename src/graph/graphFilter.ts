@@ -2,7 +2,7 @@ import Graphology from 'graphology';
 import { undirectedSingleSourceLength } from 'graphology-shortest-path/unweighted';
 import { TFile } from "obsidian";
 import { GraphColorAttributes, GraphData, GraphNode, LocalGraphView } from "obsidian-typings";
-import { getFile, getFileInteractives, getOutlinkTypes, regExpFromString, TAG_KEY } from "../internal";
+import { getFile, getFileInteractives, getOutlinkTypes, regExpFromString, shouldIncludeTagType, TAG_KEY } from "../internal";
 import { GraphInstances, ExtendedGraphInstances } from "../pluginInstances";
 
 interface GraphNodeData {
@@ -96,11 +96,19 @@ export class GraphFilter {
             }
         }
 
+        if (node.type === 'tag'
+            && this.instances.settings.enableFeatures[this.instances.type]['tags']
+            && !shouldIncludeTagType(id, this.instances.settings)) {
+            return true;
+        }
+
         if (!this.instances.settings.fadeOnDisable) {
             // Remove file nodes
             const file = getFile(id);
             if (file) {
                 for (const [key, manager] of this.instances.nodesSet.managers) {
+                    if (key === TAG_KEY) continue;
+
                     const settings = this.instances.settings.interactiveSettings[key];
                     let interactives = getFileInteractives(key, file, this.instances.settings);
                     if (interactives === null) {

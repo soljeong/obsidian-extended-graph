@@ -1,7 +1,7 @@
 import { TAbstractFile, TFile } from "obsidian";
 import { GraphLink, GraphNode } from "obsidian-typings";
 import * as Color from '../../colors/color-bits';
-import { ExtendedGraphElement, ExtendedGraphLink, ExtendedGraphNode, GraphInstances, InteractiveManager, SettingQuery, TAG_KEY } from "../../internal";
+import { ExtendedGraphElement, ExtendedGraphLink, ExtendedGraphNode, GraphInstances, InteractiveManager, SettingQuery, shouldIncludeTagType, TAG_KEY } from "../../internal";
 
 
 export abstract class AbstractSet<T extends GraphNode | GraphLink> {
@@ -75,6 +75,9 @@ export abstract class AbstractSet<T extends GraphNode | GraphLink> {
             let types: Set<string> = new Set<string>();
             const interactiveSettings = this.instances.settings.interactiveSettings[key];
             if ((element as GraphNode).type === "tag" && key === TAG_KEY) {
+                if (!shouldIncludeTagType((element as GraphNode).id, this.instances.settings)) {
+                    continue;
+                }
                 types.add((element as GraphNode).id.replace("#", ""));
             }
             else if (file && file instanceof TFile) {

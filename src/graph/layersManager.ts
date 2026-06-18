@@ -451,10 +451,10 @@ export class LayersManager {
 
                 return {
                     id: layerID,
-                    level: parsed.level ?? settings.layersLevels[file.path] ?? settings.defaultLevelForLayers,
+                    level: parsed.level ?? settings.layersLevels[layerID] ?? settings.defaultLevelForLayers,
                     label: parsed.label,
                     levelFromID: parsed.level !== undefined,
-                    levelFromDefault: parsed.level === undefined && !(file.path in settings.layersLevels),
+                    levelFromDefault: parsed.level === undefined && !(layerID in settings.layersLevels),
                 };
             }
         }

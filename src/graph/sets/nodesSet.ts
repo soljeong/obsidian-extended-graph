@@ -17,7 +17,8 @@ import {
     CSSBridge,
     AbstractSet,
     AttachmentNodeGraphicsWrapper,
-    ExtendedGraphTagNode
+    ExtendedGraphTagNode,
+    TAG_KEY
 } from "../../internal";
 import { OutlineFilter } from "@pixi/filter-outline";
 
@@ -239,6 +240,40 @@ export class NodesSet extends AbstractSet<GraphNode> {
     }
 
     // ============================= INTERACTIVES ==============================
+
+    disableTagNodeType(type: string): string[] {
+        return this.disableTagNode(type);
+    }
+
+    enableTagNodeType(type: string): string[] {
+        return this.enableTagNode(type);
+    }
+
+    private disableTagNode(type: string): string[] {
+        const id = "#" + type.replace(/^#/, "");
+        const extendedElement = this.extendedElementsMap.get(id);
+        if (!extendedElement || extendedElement.coreElement.type !== "tag") return [];
+
+        extendedElement.disableType(TAG_KEY, type);
+        if (extendedElement.isEnabled) {
+            extendedElement.disable();
+            return [id];
+        }
+        return [];
+    }
+
+    private enableTagNode(type: string): string[] {
+        const id = "#" + type.replace(/^#/, "");
+        const extendedElement = this.extendedElementsMap.get(id);
+        if (!extendedElement || extendedElement.coreElement.type !== "tag") return [];
+
+        extendedElement.enableType(TAG_KEY, type);
+        if (!extendedElement.isEnabled) {
+            extendedElement.enable();
+            return [id];
+        }
+        return [];
+    }
 
     /**
      * Reset arcs for each node

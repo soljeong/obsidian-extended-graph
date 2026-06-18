@@ -33,6 +33,11 @@ export class SettingLayers extends SettingsSectionPerGraphType {
                         t("features.layerPropertiesAdd"),
                         ExtendedGraphInstances.settings.layerProperties
                     );
+                    const onClose = modal.onClose.bind(modal);
+                    modal.onClose = () => {
+                        onClose();
+                        this.refreshLayersInfo();
+                    };
                     modal.open();
                 })
             }
@@ -107,8 +112,7 @@ export class SettingLayers extends SettingsSectionPerGraphType {
     }
 
     private addLayersInfo() {
-        const layers = LayersManager.getAllLayers(ExtendedGraphInstances.settings);
-        this.addLayersInfoFromData(layers);
+        const layers = this.refreshLayersInfo();
 
         if (getDataviewPlugin()) {
             const setting = new Setting(this.containerEl)
@@ -129,6 +133,12 @@ export class SettingLayers extends SettingsSectionPerGraphType {
                 });
             this.elementsBody.push(setting.settingEl);
         }
+    }
+
+    private refreshLayersInfo(): Layer[] {
+        const layers = LayersManager.getAllLayers(ExtendedGraphInstances.settings);
+        this.addLayersInfoFromData(layers);
+        return layers;
     }
 
     private addLayersInfoFromData(layers: Layer[]) {
@@ -247,6 +257,10 @@ class LayerSetting extends Setting {
         this.layer = layer;
 
         this.settingEl.addClass("setting-layer-info");
+        this.setName(layer.id);
+        if (!layer.levelFromID) {
+            this.setDesc(t("features.layersInfoLevelNotFromID"));
+        }
 
         this.addSaveButton()
             .addLevelInput()
@@ -270,6 +284,7 @@ class LayerSetting extends Setting {
         this.addText(cb => {
             this.levelInput = cb;
             cb.inputEl.addClass("number");
+            cb.inputEl.ariaLabel = "Level";
             if (this.layer.levelFromDefault) {
                 cb.setPlaceholder(this.layer.level.toString());
             }
@@ -286,6 +301,7 @@ class LayerSetting extends Setting {
         }
         return this.addText(cb => {
             this.labelInput = cb;
+            cb.inputEl.ariaLabel = "Label";
             this.labelInput.setValue(this.layer.label);
         })
     }
@@ -301,6 +317,7 @@ class LayerSetting extends Setting {
     private addOpacityInput(): LayerSetting {
         this.addText(cb => {
             cb.inputEl.addClass("number");
+            cb.inputEl.ariaLabel = "Opacity";
             cb.setPlaceholder(t("features.layersOpacityPlaceholder"));
             cb.setValue(ExtendedGraphInstances.settings.layersCustomOpacity[this.layer.level]?.toString() ?? "");
             cb.onChange(async (value) => {

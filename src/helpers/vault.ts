@@ -1,6 +1,6 @@
 import { getAllTags, getLinkpath, TagCache, TFile } from "obsidian";
 import { DataviewApi } from "obsidian-dataview";
-import { canonicalizeVarName, ExtendedGraphSettings, FOLDER_KEY, getDataviewPageProperties, getDataviewPlugin, ExtendedGraphInstances, TAG_KEY, pathParse, SettingQuery } from "../internal";
+import { canonicalizeVarName, ExtendedGraphSettings, FOLDER_KEY, getDataviewPageProperties, getDataviewPlugin, ExtendedGraphInstances, TAG_KEY, pathParse, SettingQuery, TagsSource } from "../internal";
 
 export function getFile(path: string): TFile | null {
     return ExtendedGraphInstances.app.vault.getFileByPath(path);
@@ -18,7 +18,7 @@ export function getFileInteractives(interactive: string, file: TFile, settings?:
     let results: Set<string> | null;
     switch (interactive) {
         case TAG_KEY:
-            results = getTags(file);
+            results = getTags(file, settings);
             break;
         case FOLDER_KEY:
             results = getFolderPath(file);
@@ -46,14 +46,60 @@ export function getNumberOfFileInteractives(interactive: string, file: TFile, ty
 
 // ================================== TAGS ================================== //
 
-function getTags(file: TFile): Set<string> {
+function getTags(file: TFile, settings?: ExtendedGraphSettings): Set<string> {
     const metadataCache = ExtendedGraphInstances.app.metadataCache.getCache(file.path);
     if (!metadataCache) return new Set<string>();
 
-    const tags = getAllTags(metadataCache)?.map(t => t.replace('#', ''));
+    const tags = getTagsSource(settings) === "frontmatter"
+        ? getFrontmatterTags(metadataCache.frontmatter?.tags)
+        : getAllTags(metadataCache)?.map(t => normalizeTag(t));
     if (!tags) return new Set<string>();
 
     return new Set<string>(tags.sort());
+}
+
+export function getAllTagTypes(settings?: ExtendedGraphSettings): string[] {
+    const tags = new Set<string>();
+
+    if (getTagsSource(settings) === "frontmatter") {
+        for (const file of ExtendedGraphInstances.app.vault.getMarkdownFiles()) {
+            const metadataCache = ExtendedGraphInstances.app.metadataCache.getCache(file.path);
+            for (const tag of getFrontmatterTags(metadataCache?.frontmatter?.tags) ?? []) {
+                tags.add(tag);
+            }
+        }
+    }
+    else {
+        for (const tag of Object.keys(ExtendedGraphInstances.app.metadataCache.getTags())) {
+            tags.add(normalizeTag(tag));
+        }
+    }
+
+    return [...tags].sort();
+}
+
+export function shouldIncludeTagType(tag: string, settings?: ExtendedGraphSettings): boolean {
+    if (getTagsSource(settings) !== "frontmatter") return true;
+    return getAllTagTypes(settings).contains(normalizeTag(tag));
+}
+
+function getTagsSource(settings?: ExtendedGraphSettings): TagsSource {
+    return settings?.interactiveSettings[TAG_KEY]?.tagsSource
+        ?? ExtendedGraphInstances.settings.interactiveSettings[TAG_KEY]?.tagsSource
+        ?? "all";
+}
+
+function getFrontmatterTags(tags: unknown): string[] | undefined {
+    if (!tags) return;
+    const values = Array.isArray(tags) ? tags : [tags];
+    return values
+        .filter((tag): tag is string => typeof tag === "string")
+        .map(tag => normalizeTag(tag))
+        .filter(tag => tag !== "");
+}
+
+function normalizeTag(tag: string): string {
+    return tag.replace(/^#/, "");
 }
 
 function getNumberOfTags(file: TFile, tag: string): number {

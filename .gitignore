@@ -22,6 +22,7 @@ data.json
 .DS_Store
 
 # Others
+AGENTS.md
 debug/
 logs.txt
 *.xcf

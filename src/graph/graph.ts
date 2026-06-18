@@ -140,7 +140,11 @@ export class Graph extends Component {
     disableNodeInteractiveTypes(key: string, types: string[]): void {
         let nodesToDisable: string[] = [];
         for (const type of types) {
-            nodesToDisable = nodesToDisable.concat(this.instances.nodesSet.disableType(key, type));
+            nodesToDisable = nodesToDisable.concat(
+                key === TAG_KEY
+                    ? this.instances.nodesSet.disableTagNodeType(type)
+                    : this.instances.nodesSet.disableType(key, type)
+            );
         }
         if (this.instances.settings.fadeOnDisable && nodesToDisable.length > 0) {
             this.fadeOutNodes(nodesToDisable);
@@ -160,7 +164,11 @@ export class Graph extends Component {
     enableNodeInteractiveTypes(key: string, types: string[]): void {
         let nodesToEnable: string[] = [];
         for (const type of types) {
-            nodesToEnable = nodesToEnable.concat(this.instances.nodesSet.enableType(key, type));
+            nodesToEnable = nodesToEnable.concat(
+                key === TAG_KEY
+                    ? this.instances.nodesSet.enableTagNodeType(type)
+                    : this.instances.nodesSet.enableType(key, type)
+            );
         }
         if (this.instances.settings.fadeOnDisable && nodesToEnable.length > 0) {
             this.fadeInNodes(nodesToEnable);

@@ -335,6 +335,7 @@ export default class ExtendedGraphPlugin extends Plugin {
             noneType: "none",
             showOnGraph: true,
             enableByDefault: true,
+            tagsSource: "all",
         };
 
         DEFAULT_SETTINGS.interactiveSettings[LINK_KEY] = {
@@ -515,4 +516,3 @@ export default class ExtendedGraphPlugin extends Plugin {
         }, 2000);
     }
 }
-

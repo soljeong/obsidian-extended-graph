@@ -269,6 +269,10 @@
             "specificColorsDesc": "Choose specific colors to override the color palette",
             "tags": "Tags",
             "tagsDesc": "Display and filter by tags",
+            "tagsSource": "Tag source",
+            "tagsSourceDesc": "Choose whether tag controls use all tags or only tags from the note properties",
+            "tagsSourceAll": "All tags",
+            "tagsSourceFrontmatter": "Property tags only",
             "useForNodeColor": "Use for node color",
             "useForNodeColorDesc": "Apply this property's color to the node background"
         },

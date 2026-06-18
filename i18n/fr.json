@@ -269,6 +269,10 @@
             "specificColorsDesc": "Choisissez des couleurs spécifiques remplaçant la palette",
             "tags": "Tags",
             "tagsDesc": "Affiche et filtre les nœuds par tags",
+            "tagsSource": "Source des tags",
+            "tagsSourceDesc": "Choisir si les contrôles utilisent tous les tags ou seulement ceux des propriétés de note",
+            "tagsSourceAll": "Tous les tags",
+            "tagsSourceFrontmatter": "Tags des propriétés seulement",
             "useForNodeColor": "Utiliser pour la couleur du nœud",
             "useForNodeColorDesc": "Appliquer la couleur de cette propriété à l'arrière-plan du nœud"
         },

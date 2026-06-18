@@ -28,6 +28,7 @@ export type ExternalLinkOption = 'none' | 'domain' | 'href' | 'domain_and_href';
 export type ExternalLinkOpenMode = 'web' | 'note' | 'choice';
 export type NodesSelectionMode = 'replace' | 'add' | 'subtract' | 'intersect';
 export type GraphStatsDirection = 'normal' | 'reversed' | 'undirected';
+export type TagsSource = 'all' | 'frontmatter';
 
 type InteractiveSettings = {
     colormap: string;
@@ -38,6 +39,7 @@ type InteractiveSettings = {
     undefinedType?: string; // Only used for properties (not tag/link/folder)
     showOnGraph: boolean;
     enableByDefault: boolean;
+    tagsSource?: TagsSource; // Only used for tags
     useForNodeColor?: boolean; // Only used for properties (not tag/link/folder)
 }
 

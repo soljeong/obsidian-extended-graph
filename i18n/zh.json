@@ -235,6 +235,10 @@
             "specificColorsDesc": "为其分配指定的颜色（覆盖调色板的配色）",
             "tags": "标签",
             "tagsDesc": "标签的显示和筛选",
+            "tagsSource": "标签来源",
+            "tagsSourceDesc": "选择标签控件使用所有标签，还是仅使用笔记属性中的标签",
+            "tagsSourceAll": "所有标签",
+            "tagsSourceFrontmatter": "仅属性标签",
             "useForNodeColor": "用于节点颜色",
             "useForNodeColorDesc": "将此属性的颜色应用于节点背景"
         },

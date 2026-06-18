@@ -960,10 +960,6 @@ body {
             padding-top: 0;
         }
 
-        .setting-item-info {
-            display: none;
-        }
-
         .setting-item-control {
             justify-content: space-between;
         }

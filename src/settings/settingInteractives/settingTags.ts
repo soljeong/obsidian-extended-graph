@@ -1,5 +1,5 @@
 import { Setting } from "obsidian";
-import { ExtendedGraphSettingTab, ExtendedGraphInstances, SettingInteractives, t, TAG_KEY } from "../../internal";
+import { ExtendedGraphSettingTab, ExtendedGraphInstances, getAllTagTypes, SettingInteractives, t, TAG_KEY, TagsSource } from "../../internal";
 
 export class SettingTags extends SettingInteractives {
 
@@ -10,6 +10,8 @@ export class SettingTags extends SettingInteractives {
     protected override addBody(): void {
         super.addBody();
 
+        this.addTagsSource();
+
         // Show on graph
         this.elementsBody.push(new Setting(this.settingTab.containerEl)
             .setName(t("features.interactives.arcsAdd"))
@@ -19,6 +21,22 @@ export class SettingTags extends SettingInteractives {
                 cb.onChange(value => {
                     ExtendedGraphInstances.settings.interactiveSettings[this.interactiveKey].showOnGraph = value;
                     ExtendedGraphInstances.plugin.saveSettings();
+                })
+            }).settingEl);
+    }
+
+    private addTagsSource(): void {
+        this.elementsBody.push(new Setting(this.settingTab.containerEl)
+            .setName(t("features.interactives.tagsSource"))
+            .setDesc(t("features.interactives.tagsSourceDesc"))
+            .addDropdown(cb => {
+                cb.addOption("all", t("features.interactives.tagsSourceAll"));
+                cb.addOption("frontmatter", t("features.interactives.tagsSourceFrontmatter"));
+                cb.setValue(ExtendedGraphInstances.settings.interactiveSettings[this.interactiveKey].tagsSource ?? "all");
+                cb.onChange(async (value: TagsSource) => {
+                    ExtendedGraphInstances.settings.interactiveSettings[this.interactiveKey].tagsSource = value;
+                    await ExtendedGraphInstances.plugin.saveSettings();
+                    ExtendedGraphInstances.plugin.app.workspace.trigger(`extended-graph:settings-interactive-color-changed`, this.interactiveKey);
                 })
             }).settingEl);
     }
@@ -36,6 +54,6 @@ export class SettingTags extends SettingInteractives {
     }
 
     static getAllTypes(): string[] {
-        return Object.keys(ExtendedGraphInstances.app.metadataCache.getTags()).map(tag => tag.replace("#", ""));
+        return getAllTagTypes(ExtendedGraphInstances.settings);
     }
 }
